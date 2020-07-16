@@ -1,7 +1,9 @@
 function makeCard(message) {
-    return $('<div class="card" style="width: 18rem;"><div class="card-body"><h5 class="card-title">' + message.user + '</h5>'
-             + '<h6 class="card-subtitle mb-2 text-muted">'+ message.datetime +'</h6>'
-             + '<p class="card-text">'+ message.text +'</p><a href="#" class="btn">Go somewhere</a></div></div>');
+    return $('<div class="card" style="width: 18rem;">'
+             + '<div class="card-header">'+ message.datetime +'</div>'
+             + '<div class="card-body"><h5 class="card-title">' + message.user + '</h5>'
+            // + '<h6 class="card-subtitle mb-2 text-muted">'+ message.datetime +'</h6>'
+             + '<p class="card-text">'+ message.text +'</p><a href="#" class="btn btn-outline-primary">♡</a></div></div>');
 }
 
 function kickGAS(param) {
@@ -17,7 +19,7 @@ function kickGAS(param) {
     success : function(messages) {
         $.each(messages, function(index, message) {
             console.log(message);
-            $("body").append(makeCard(message));
+            $("#messages").append(makeCard(message));
         });
 
     }
@@ -26,7 +28,7 @@ function kickGAS(param) {
 }
 
 function load() {
-    var param = {count: 3};
+    var param = {count: 7};
     kickGAS(param);
 }
 
@@ -45,8 +47,8 @@ $(document).ready(function() {
     load();
     $("#ok").click(function() {
         console.log("clicked!");
-        var user = $("#add [name=user]").val();
-        var text = $("#add [name=textbody]").val();
+        var user = $("#add #user").val();
+        var text = $("#add #textbody").val();
         addAndLoad(user, text);
     });
 });
