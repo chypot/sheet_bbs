@@ -12,6 +12,9 @@
 
     <meta http-equiv="content-type" charset="utf-8">
     <title>BBS sheet</title>
+    <script type="text/javascript" src="js/jquery-3.5.1.min.js"></script>
+    <script type="text/javascript" src="js/script.js"></script>
+
   </head>
 
   <body>
@@ -20,10 +23,10 @@
       <li><a href="https://chypot.netlify.app/">連続体仮説</a></li>
       <li><a href="https://twitter.com/continuumHypot">Twitter連続体仮説</a></li>
     </ul>
-    <form method="post" action="https://script.google.com/macros/s/AKfycbwclHIIjjt2oQaoR2tF3FIHCE7bJKL712JsdYcgQPpydm7l4RE/exec">
+    <form id="form_post" method="post">
       <input type="text" name="user" />
       <input type="text" name="text" />
-      <input type="submit" value="OK">
+      <input id="ok" type="button" value="OK">
     </form>
   </body>
 </html>
