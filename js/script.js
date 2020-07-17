@@ -1,9 +1,18 @@
+function autoLink(str) {
+    var regexp_url = /((h?)(ttps?:\/\/[a-zA-Z0-9.\-_@:/~?%&;=+#',()*!]+))/g; // ']))/;
+    var regexp_makeLink = function(all, url, h, href) {
+        var link = "./link.html?url=h" + encodeURIComponent(href);
+        return '<a target="_blank" href="' + link + '">' + url + '</a>';
+    }
+    return str.replace(regexp_url, regexp_makeLink);
+}
+
 function makeCard(message) {
     return $('<div class="card" style="width: 18rem;">'
              + '<div class="card-header">'+ new Date(message.datetime) +'</div>'
              + '<div class="card-body"><h5 class="card-title">' + message.user + '</h5>'
             // + '<h6 class="card-subtitle mb-2 text-muted">'+ message.datetime +'</h6>'
-             + '<p class="card-text">'+ message.text +'</p><a href="#" class="btn btn-outline-primary">♡</a></div></div>');
+             + '<p class="card-text">'+ autoLink(message.text) +'</p><a href="#" class="btn btn-outline-primary">♡</a></div></div>');
 }
 
 function kickGAS(param) {
