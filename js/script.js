@@ -7,12 +7,21 @@ function autoLink(str) {
     return str.replace(regexp_url, regexp_makeLink);
 }
 
+function tweetLink(message) {
+    var param = {
+        text: message.text + " #SheetBbs",
+        url: "https://chypot.github.io/sheet_bbs/"
+    };
+    return "https://twitter.com/intent/tweet?" + $.param(param);
+}
+
 function makeCard(message) {
     return $('<div class="card" style="width: 18rem;">'
              + '<div class="card-header">'+ new Date(message.datetime) +'</div>'
              + '<div class="card-body"><h5 class="card-title">' + message.user + '</h5>'
             // + '<h6 class="card-subtitle mb-2 text-muted">'+ message.datetime +'</h6>'
-             + '<p class="card-text">'+ autoLink(message.text) +'</p><a href="#" class="btn btn-outline-primary">♡</a></div></div>');
+             + '<p class="card-text">'+ autoLink(message.text) +'</p>'
+             + '<a target="_blank" href='+ tweetLink(message) +' class="btn btn-outline-primary">♡</a></div></div>');
 }
 
 function kickGAS(param) {
