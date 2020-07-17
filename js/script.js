@@ -1,6 +1,6 @@
 function makeCard(message) {
     return $('<div class="card" style="width: 18rem;">'
-             + '<div class="card-header">'+ message.datetime +'</div>'
+             + '<div class="card-header">'+ new Date(message.datetime) +'</div>'
              + '<div class="card-body"><h5 class="card-title">' + message.user + '</h5>'
             // + '<h6 class="card-subtitle mb-2 text-muted">'+ message.datetime +'</h6>'
              + '<p class="card-text">'+ message.text +'</p><a href="#" class="btn btn-outline-primary">♡</a></div></div>');
@@ -8,47 +8,78 @@ function makeCard(message) {
 
 function kickGAS(param) {
     var dataObj =
-        (param.mode == "add") ? {count: param.count, user: param.user, text: param.text} : {count: param.count};
+        (param.mode == "add") ? {count: param.count, user: param.user, text: param.text} : param;
     console.log(dataObj);
     $.ajax({
-    type    : 'GET',
-    url     : "https://script.google.com/macros/s/AKfycbwclHIIjjt2oQaoR2tF3FIHCE7bJKL712JsdYcgQPpydm7l4RE/exec",
-    data    : $.param(dataObj),
-    dataType: 'jsonp',
-    jsonpCallback   : 'jsoncallback',
-    success : function(messages) {
-        $.each(messages, function(index, message) {
-            console.log(message);
-            $("#messages").append(makeCard(message));
-        });
-
-    }
-});
-
+        type    : 'GET',
+        url     : "https://script.google.com/macros/s/AKfycbwclHIIjjt2oQaoR2tF3FIHCE7bJKL712JsdYcgQPpydm7l4RE/exec",
+        data    : $.param(dataObj),
+        dataType: 'jsonp',
+        jsonpCallback   : 'jsoncallback',
+        success : function(messages) {
+            console.log(messages);
+            if (messages.length != 0) {
+                $.each(messages.reverse(), function(index, message) {
+                    $("#messages").append(makeCard(message));
+                });
+                var oldest = messages.pop().datetime;
+                successLoading();
+                setOldest(oldest);
+            } else {
+                successLoading();
+            }
+        }
+    });
 }
 
-function load() {
-    var param = {count: 7};
+function startLoading() {
+    $('#load').prop("disabled", true);
+    $('#load').html(
+        '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...'
+    );
+}
+
+function successLoading() {
+    $('#load').prop("disabled", false);
+    $('#load').html('Load');
+}
+
+function setOldest(oldest) {
+    console.log("oldest: "+oldest);
+    $('#load').data("oldest", oldest);
+}
+
+function load(until) {
+    startLoading();
+    var param = {count: 7, until: until};
     kickGAS(param);
 }
 
-function addAndLoad(user, text) {
+function reload() {
+    var until = $('#load').data("oldest");
+    load(until);
+}
+
+function add(user, text) {
     var param = {
-        count: 1,
         mode: "add",
         user: user,
         text: text
     }
+    $("#messages").prepend(makeCard({datetime: new Date(), user:user, text:text}));
     kickGAS(param);
 }
 
 $(document).ready(function() {
     console.log("ready");
-    load();
+    var now = new Date();
+    load(now);
     $("#ok").click(function() {
-        console.log("clicked!");
         var user = $("#add #user").val();
         var text = $("#add #textbody").val();
-        addAndLoad(user, text);
+        add(user, text);
+    });
+    $("#load").click(function() {
+        reload();
     });
 });
